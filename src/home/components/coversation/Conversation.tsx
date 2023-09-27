@@ -56,3 +56,5 @@ const Conversation = forwardRef(
 );
 
 export default Conversation;
+
+Conversation.displayName = "Conversation";
