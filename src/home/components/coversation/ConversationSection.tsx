@@ -37,6 +37,7 @@ const ConversationSection = () => {
   } = useChat();
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,6 +58,8 @@ const ConversationSection = () => {
     const getAndSetNewMessage = async (data: TMessage) => {
       // to update messages
       setMessages((prev: TMessage[]) => [...prev, data]);
+      // play sound
+      await audioRef.current?.play();
       // to update last message in chats
       setActiveChats((prev: TChat[]) => {
         const chats = [...prev];
@@ -96,38 +99,50 @@ const ConversationSection = () => {
   }, [socket, activeChats]);
 
   return (
-    <div className="col-span-8 border-l-[1px] flex flex-col justify-between">
-      <div className="border-b-[1px] p-2 flex justify-between items-center h-14">
-        <ConversationHeader
-          username={activeChat?.username}
-          online={onlineUsers[activeChat?._id || ""]}
-        />
+    <>
+      <div className="col-span-8 border-l-[1px] flex flex-col justify-between">
+        <div className="border-b-[1px] p-2 flex justify-between items-center h-14">
+          <ConversationHeader
+            username={activeChat?.username}
+            online={onlineUsers[activeChat?._id || ""]}
+            avatar={activeChat?.avatar}
+          />
+          {activeChat ? (
+            <ActionTooltip description="Close this chat">
+              <IconButton onClick={() => setActiveChat(null)}>
+                <X className="w-5 h-5 text-gray-600" />
+              </IconButton>
+            </ActionTooltip>
+          ) : null}
+        </div>
         {activeChat ? (
-          <ActionTooltip description="Close this chat">
-            <IconButton onClick={() => setActiveChat(null)}>
-              <X className="w-5 h-5 text-gray-600" />
-            </IconButton>
-          </ActionTooltip>
-        ) : null}
-      </div>
-      {activeChat ? (
-        loading.chats ? (
-          <ConversationSkeleton />
+          loading.chats ? (
+            <ConversationSkeleton />
+          ) : (
+            <>
+              <Conversation
+                ref={bottomRef}
+                messages={messages}
+                myId={user?._id}
+                recieverUsername={activeChat?.username}
+              />
+              <SendMessageInput />
+            </>
+          )
         ) : (
-          <>
-            <Conversation
-              ref={bottomRef}
-              messages={messages}
-              myId={user?._id}
-              recieverUsername={activeChat?.username}
-            />
-            <SendMessageInput />
-          </>
-        )
-      ) : (
-        <NoActiveChat />
-      )}
-    </div>
+          <NoActiveChat />
+        )}
+      </div>
+      <audio
+        className="hidden"
+        ref={audioRef}
+        controls
+        src="/message_received.mp3"
+      >
+        Your browser does not support the
+        <code>audio</code> element.
+      </audio>
+    </>
   );
 };
 

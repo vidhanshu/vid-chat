@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, X } from "lucide-react";
 import React, { HTMLAttributes, useEffect, useState } from "react";
 
 import UserCard from "./UserCard";
@@ -14,14 +14,20 @@ import { UserService } from "../../service/user.service";
 
 import { TUser } from "@/src/auth/context/types";
 import { cn } from "@/lib/utils";
+import IconButton from "@/components/ui/icon-button";
 
 const userService = new UserService();
-const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = ({
+type TSidebarProps = HTMLAttributes<HTMLDivElement> & {
+  onUserClick?: () => void;
+};
+const Sidebar: React.FC<TSidebarProps> = ({
   className,
+  onUserClick,
   ...props
 }) => {
   const { user } = useAuth();
-  const { setActiveChat, activeChats, loading, onlineUsers } = useChat();
+  const { setActiveChat, activeChats, loading, onlineUsers, activeChat } =
+    useChat();
 
   const [search, setSearch] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -50,7 +56,10 @@ const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = ({
   }, []);
 
   return (
-    <aside className={cn("col-span-4 h-[calc(100vh_-_150px)]", className)} {...props}>
+    <aside
+      className={cn("col-span-4 h-[calc(100vh_-_150px)]", className)}
+      {...props}
+    >
       <div className="border-b-[1px] p-2 h-14 flex items-center justify-center">
         <h1 className="text-center font-bold">Users</h1>
       </div>
@@ -64,21 +73,26 @@ const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = ({
             onChange={(e) => {
               setSearch(e.target.value);
             }}
+            value={search}
             className="focus:outline-none flex-grow"
             placeholder="Enter username to search..."
           />
+          <IconButton onClick={() => setSearch("")} className="p-1 hidden md:block">
+            <X className="w-4 h-4 text-slate-400" />
+          </IconButton>
 
           {isSearching && (
-            <div className="absolute top-full left-0 w-full p-4 bg-white shadow-sm rounded-sm border-[1px]">
+            <div className="absolute top-full left-0 w-full p-2 bg-white shadow-sm rounded-sm border-[1px]">
               {!search ? (
                 <span className="text-sm text-slate-400">
                   Type to search...
                 </span>
               ) : (
-                <>
+                <div className="space-y-2">
                   {users.map((u) => {
                     return (
                       <UserCard
+                        avatar={u.avatar}
                         key={u._id}
                         username={u.username}
                         online={onlineUsers[u._id]}
@@ -89,7 +103,7 @@ const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = ({
                       />
                     );
                   })}
-                </>
+                </div>
               )}
             </div>
           )}
@@ -108,12 +122,19 @@ const Sidebar: React.FC<HTMLAttributes<HTMLDivElement>> = ({
               return (
                 <UserCard
                   key={chat._id}
+                  avatar={oppositeUser?.avatar}
                   username={oppositeUser?.username}
                   last_message={chat.last_message}
-                  handleClick={() => setActiveChat(oppositeUser)}
+                  handleClick={() => {
+                    setActiveChat(oppositeUser);
+                    if (onUserClick) {
+                      onUserClick();
+                    }
+                  }}
                   online={
                     oppositeUser?._id ? onlineUsers[oppositeUser?._id] : false
                   }
+                  active={activeChat?._id === oppositeUser?._id}
                 />
               );
             })

@@ -4,6 +4,7 @@ export type TUser = {
   email: string;
   createdAt: string;
   updatedAt: string;
+  avatar?: string;
 };
 
 export type TAuthContext = {

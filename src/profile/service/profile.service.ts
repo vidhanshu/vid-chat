@@ -6,13 +6,15 @@ export class ProfileService {
     username,
     password,
     email,
+    avatar,
   }: {
     username?: string;
     password?: string;
     email?: string;
+    avatar?: string;
   }) {
     try {
-      if (!username && !password && !email) {
+      if (!username && !password && !email && !avatar) {
         toast({
           title: "Info",
           description: "Nothing to update",
@@ -23,6 +25,7 @@ export class ProfileService {
         username,
         password,
         email,
+        avatar,
       });
       const { message } = data;
       if (message) {

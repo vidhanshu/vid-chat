@@ -34,6 +34,8 @@ const SendMessageInput = () => {
   const { activeChat } = useChat();
   const { user } = useAuth();
 
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,7 +45,7 @@ const SendMessageInput = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.message.trim() === "") return toast({ title: "Empty message" });
-    
+
     await chatService.sendMessage(values.message, activeChat?._id);
 
     socket?.emit("sendMessage", {
@@ -52,6 +54,10 @@ const SendMessageInput = () => {
       sender: user?._id,
     });
 
+    console.log(audioRef.current)
+
+    await audioRef.current?.play();
+
     form.setValue("message", "");
   }
 
@@ -59,6 +65,10 @@ const SendMessageInput = () => {
 
   return (
     <div className="border-t-[1px] p-2">
+      <audio className="hidden" ref={audioRef} controls src="/message_sent.mp3">
+        Your browser does not support the
+        <code>audio</code> element.
+      </audio>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -71,6 +81,8 @@ const SendMessageInput = () => {
               <FormItem className="flex-grow">
                 <FormControl>
                   <Input
+                    autoComplete="off"
+                    autoCorrect="off"
                     className="focus-visible:ring-0 focus-visible:ring-transparent"
                     placeholder="Enter message"
                     {...field}

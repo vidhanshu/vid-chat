@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 const ChatPage = () => {
   const { socket } = useSocket();
   const { user } = useAuth();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (socket) {
@@ -29,18 +30,25 @@ const ChatPage = () => {
 
   return (
     <>
-      <div className="md:hidden">
-        <Sheet>
-          <SheetTrigger className="mb-2">
+      <div className="lg:hidden">
+        <Sheet
+          open={open}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setOpen(false);
+            }
+          }}
+        >
+          <SheetTrigger onClick={() => setOpen(true)} className="mb-2">
             <Button>Users</Button>
           </SheetTrigger>
           <SheetContent className="px-0">
-            <Sidebar />
+            <Sidebar onUserClick={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
       </div>
-      <div className="md:grid md:grid-cols-12 border-[1px] rounded-sm h-[calc(100vh_-_150px)]">
-        <Sidebar className="hidden md:block" />
+      <div className="lg:grid lg:grid-cols-12 border-[1px] rounded-sm h-[calc(100vh_-_150px)]">
+        <Sidebar className="hidden lg:block" />
         <ConversationSection />
       </div>
     </>
