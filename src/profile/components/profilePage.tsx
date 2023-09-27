@@ -63,6 +63,7 @@ const ProfilePage = () => {
       const res = await uploadFileService.uploadImage(file);
       if (res?.link) {
         payload.avatar = res.link;
+        setFile(null);
       }
     }
     const { data } = await profileService.updateProfile(payload);
@@ -74,10 +75,15 @@ const ProfilePage = () => {
   return (
     <div className="px-4 md:px-0 py-4">
       <h1 className="font-semibold text-4xl mb-6">Update Profile</h1>
-      <div className="w-16 h-16 rounded-full bg-gray-300 my-4 relative overflow-hidden">
+      <div className="border-[1px] w-16 h-16 rounded-full bg-gray-300 my-4 relative overflow-hidden">
         <label htmlFor="image-upload-avatar" className="cursor-pointer">
           {user?.avatar ? (
-            <Image fill alt="user-avatar" src={user?.avatar} />
+            <Image
+              fill
+              objectFit="cover"
+              alt="user-avatar"
+              src={user?.avatar}
+            />
           ) : (
             <div className="text-4xl text-white text-center w-full h-full flex items-center justify-center">
               {user?.username[0]}
