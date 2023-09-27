@@ -4,7 +4,7 @@ import * as z from "zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +16,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AuthService } from "../services/authService";
+import { AuthService } from "../services/auth.service";
 import { useAuth } from "../context/use-auth";
 import { useToast } from "@/components/ui/use-toast";
+import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
 const formSchema = z.object({
   email: z.string().email().nonempty(),
@@ -27,7 +28,6 @@ const formSchema = z.object({
 
 const authService = new AuthService();
 const SignIn = () => {
-  const router = useRouter();
   const { setUser, user } = useAuth();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,21 +39,13 @@ const SignIn = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { error } = await authService.Signin(values.email, values.password);
-    if (error) {
-      return toast({
-        title: "Error",
-        description: error,
-        variant: "destructive",
-      });
-    }
-    toast({
-      title: "Successfully signed-in",
-    });
+    await authService.Signin(values.email, values.password);
     setUser((await authService.GetMe()).data);
   }
 
-  if (user) return redirect("/");
+  if (user) return redirect(FRONTEND_ROUTES.chat);
+
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <div className="shadow-sm border-[1px] w-full max-w-[500px] p-4 rounded-md">
@@ -90,10 +82,12 @@ const SignIn = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Sign in</Button>
+          <Button isLoading={isSubmitting} type="submit">
+            Sign in
+          </Button>
           <p>
             Don&apos;t have an account?{" "}
-            <Link href="/sign-up" className="text-blue-600">
+            <Link href={FRONTEND_ROUTES.signUp} className="text-blue-600">
               Register
             </Link>
           </p>

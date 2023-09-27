@@ -1,51 +1,76 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { User2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { AuthService } from "@/src/auth/services/authService";
-import { useToast } from "@/components/ui/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-import useSocket from "../context/socket/use-socket";
+import { AuthService } from "@/src/auth/services/auth.service";
+
+import useSocket from "../../home/context/socket/use-socket";
 import { useAuth } from "@/src/auth/context/use-auth";
+import { FRONTEND_ROUTES } from "../utils/routes";
+import Link from "next/link";
 
 const authService = new AuthService();
 const Navbar = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const { isConnected } = useSocket();
-  const { setUser } = useAuth();
+  const { setUser, user } = useAuth();
+
+  const [loading, setLoading] = useState(false);
 
   const handleSignout = async () => {
-    const { message, error } = await authService.Signout();
-    if (error)
-      return toast({
-        title: "Error",
-        description: error,
-        variant: "destructive",
-      });
-    toast({
-      title: "Success",
-      description: message,
-    });
+    setLoading(true);
+
+    await authService.Signout();
+
     setUser(null);
-    router.push("/sign-in");
+    router.push(FRONTEND_ROUTES.signIn);
+    setLoading(false);
   };
 
   return (
     <div className="shadow-sm border-b-[1px]">
       <div className="max-w-screen-xl m-auto flex justify-between items-center p-4">
-        <h1 className="text-lg font-bold">Vchat</h1>
+        <h1 className="text-lg font-bold">
+          <Link href={FRONTEND_ROUTES.chat}>Vchat</Link>
+        </h1>
         <div className="flex gap-x-4 items-center">
           {isConnected ? (
             <Badge className="bg-green-600 hover:bg-green-600">Connected</Badge>
           ) : (
             <Badge className="bg-red-600 hover:bg-red-600">Not conencted</Badge>
           )}
-
-          <Button onClick={handleSignout}>Sign out</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="px-2">
+              <div className="flex items-center gap-x-2">
+                {user?.username}
+                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
+                  <User2 className="w-5 h-5 text-gray-600" />
+                </div>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link href={FRONTEND_ROUTES.profile}>Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={loading} onClick={handleSignout}>
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

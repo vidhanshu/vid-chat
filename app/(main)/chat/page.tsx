@@ -2,7 +2,7 @@ import React from "react";
 
 import ChatPage from "@/src/home/components/ChatPage";
 
-const Page = () => {
+const Page = async () => {
   return (
     <main className="m-auto max-w-screen-xl p-4">
       <ChatPage />

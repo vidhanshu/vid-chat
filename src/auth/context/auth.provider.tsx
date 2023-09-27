@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth.context";
-import { AuthService } from "../services/authService";
+import { AuthService } from "../services/auth.service";
 import { TUser } from "./types";
 import { useRouter } from "next/navigation";
 import GenericLoadingPage from "@/src/common/components/GenericLoadingPage";
+import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
 const authService = new AuthService();
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,7 +23,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (error) throw new Error("Unauthorized");
         setUser(data);
       } catch (error) {
-        return router.push("/sign-up");
+        return router.push(FRONTEND_ROUTES.signUp);
       } finally {
         // doing this stuff because routing takes time
         id = setTimeout(() => {

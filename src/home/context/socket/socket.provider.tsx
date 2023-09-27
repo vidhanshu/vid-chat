@@ -10,7 +10,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    setSocketInstance(io("http://localhost:8000"));
+    setSocketInstance(io(process.env.NEXT_PUBLIC_BASE_URL!));
   }, []);
 
   useEffect(() => {
@@ -24,6 +24,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       socketInstance.off("connect");
       socketInstance.off("disconnect");
+      socketInstance.close();
     };
   }, [socketInstance]);
 

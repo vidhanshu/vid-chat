@@ -1,6 +1,7 @@
 "use client";
 
 import { API, handleApiError } from "@/src/common/utils/api";
+import { toast } from "@/components/ui/use-toast";
 
 export class AuthService {
   async Signup(username: string, email: string, password: string) {
@@ -10,10 +11,13 @@ export class AuthService {
         email,
         password,
       });
-      if (data?.error) {
-        return { error: data.error, data: null };
+      const { token, message } = data;
+      if (message) {
+        toast({
+          title: "Success",
+          description: message,
+        });
       }
-      const { token } = data;
       localStorage.setItem("access_token", token);
       return { error: null, data: token };
     } catch (error) {
@@ -27,11 +31,15 @@ export class AuthService {
         email,
         password,
       });
-      if (data?.error) {
-        return { error: data.error, data: null };
+      const { token, message } = data;
+      if (message) {
+        toast({
+          title: "Success",
+          description: message,
+        });
       }
-      localStorage.setItem("access_token", data.token);
-      return { error: null, data };
+      localStorage.setItem("access_token", token);
+      return { error: null, data: token };
     } catch (error) {
       return handleApiError(error);
     }
@@ -44,11 +52,15 @@ export class AuthService {
   }> {
     try {
       const { data } = await API.post("/auth/sign-out");
-      if (data?.error) {
-        return { error: data.error, data: null };
+      const { message } = data;
+      if (message) {
+        toast({
+          title: "Success",
+          description: message,
+        });
       }
       localStorage.removeItem("access_token");
-      return { error: null, message: data?.message };
+      return { error: null, data: null };
     } catch (error) {
       return handleApiError(error);
     }

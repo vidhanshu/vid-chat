@@ -1,11 +1,11 @@
-"use client";
-
 import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const authInterceptor = (req: any) => {
-  let accessToken = localStorage.getItem("access_token");
+  let accessToken =
+    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
   if (accessToken) {
     req.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -19,12 +19,16 @@ export const API = axios.create({
 API.interceptors.request.use(authInterceptor);
 
 export const handleApiError = async (error: any) => {
-  try {
-    const errorMessage =
-      error.response?.data?.message || "An unexpected error occurred.";
-    const data = null;
-    return { error: errorMessage, data };
-  } catch (err) {
-    throw new Error("An unexpected error occurred.");
+  let errorMessage = error.response?.data?.error;
+
+  if (error.response?.data?.error && error.response?.config?.method !== "get") {
+    toast({
+      title: "Error",
+      description: errorMessage,
+      variant: "destructive",
+    });
+  } else {
+    errorMessage = "An unexpected error occurred.";
   }
+  return { error: errorMessage, data: null };
 };
