@@ -5,7 +5,7 @@ import React from "react";
 import { User2 } from "lucide-react";
 
 import ActionTooltip from "@/src/common/components/Tooltip";
-import { TypingAnimation } from "@/src/home/components/coversation/Message";
+import { LoadingAnimation } from "@/src/home/components/coversation/Message";
 
 import useChat from "@/src/home/context/chat/use-chat";
 
@@ -65,7 +65,7 @@ const ConversationHeader: React.FC<TConversationHeaderProps> = ({
       {activeChat &&
       receiverTyping.typing &&
       receiverTyping.sender === activeChat?._id ? (
-        <TypingAnimation className="ml-4" />
+        <LoadingAnimation className="ml-4" />
       ) : null}
     </div>
   );

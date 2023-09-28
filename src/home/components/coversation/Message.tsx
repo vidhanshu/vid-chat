@@ -89,19 +89,24 @@ export const TypingMessage: React.FC<TTypingMessageProps> = ({
       ) : null}
       <h5 className="text-sm md:text-base">{receiverUsername}</h5>
     </div>
-    <TypingAnimation />
+    <LoadingAnimation />
   </div>
 );
 
-type TTypingAnimationProps = HTMLAttributes<HTMLParagraphElement>;
-export const TypingAnimation: React.FC<TTypingAnimationProps> = ({
+type TLoadingAnimationProps = HTMLAttributes<HTMLParagraphElement> & {
+  title?: string;
+  emote?: string;
+};
+export const LoadingAnimation: React.FC<TLoadingAnimationProps> = ({
   className,
+  title = "Typing",
+  emote = "🔥",
   ...props
 }) => (
   <p className={cn("py-2 text-sm", className)} {...props}>
-    Typing
-    <span className="ml-2 text-xs animate-ping delay-0">🔥</span>
-    <span className="text-xs animate-ping delay-300">🔥</span>
-    <span className="text-xs animate-ping delay-700">🔥</span>
+    {title}
+    <span className="ml-2 text-xs animate-ping delay-0">{emote}</span>
+    <span className="text-xs animate-ping delay-300">{emote}</span>
+    <span className="text-xs animate-ping delay-700">{emote}</span>
   </p>
 );

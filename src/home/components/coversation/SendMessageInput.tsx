@@ -15,6 +15,7 @@ import { useDebounce } from "@/src/common/hooks/use-debounce";
 import { ChatService } from "../../service/chat.service";
 
 import { TMessage, TReceiverTyping } from "@/src/home/types";
+import { Textarea } from "@/components/ui/textarea";
 
 type SendMessageInputProps = {
   receiverTyping: TReceiverTyping;
@@ -67,8 +68,8 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
     };
   }, [receiverTyping]);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
+    e?.preventDefault();
     if (message.trim() === "") return toast({ title: "Empty message" });
 
     /**
@@ -79,9 +80,9 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
       receiver: activeChat?._id,
       sender: user?._id,
     });
-    
+
     await audioRef.current?.play();
-    
+
     const dummyMessage = {
       _id: new Date().toISOString(),
       message: message,
@@ -91,7 +92,7 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
       receiver: activeChat?._id,
       read: false,
     };
-    
+
     setMessages((prev: TMessage[]) => [...prev, dummyMessage]);
     setMessage("");
 
@@ -101,6 +102,14 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
     await chatService.sendMessage(message, activeChat?._id);
   }
 
+  const handleKeys = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      setMessage((prev) => prev + "\n");
+    } else if (e.key === "Enter") {
+      onSubmit();
+    }
+  };
+
   return (
     <>
       <div className="border-t-[1px] p-2">
@@ -108,10 +117,12 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
           onSubmit={onSubmit}
           className="flex justify-between items-center gap-x-2"
         >
-          <Input
+          <Textarea
+            rows={1}
+            onKeyDown={handleKeys}
             autoComplete="off"
             autoCorrect="off"
-            className="focus-visible:ring-0 focus-visible:ring-transparent"
+            className="focus-visible:ring-0 focus-visible:ring-transparent resize-none"
             placeholder="Enter message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}

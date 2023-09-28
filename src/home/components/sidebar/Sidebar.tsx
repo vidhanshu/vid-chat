@@ -30,30 +30,21 @@ const Sidebar: React.FC<TSidebarProps> = ({
     useChat();
 
   const [search, setSearch] = useState<string>("");
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isLodingResults, setIsLodingResults] = useState<boolean>(false);
   const [users, setUsers] = useState<TUser[]>([]);
   const key = useDebounce<string>(search, 500);
 
   useEffect(() => {
     async function searchUser() {
+      setIsLodingResults(true);
       const { data, error } = await userService.searchUser(key);
       if (!error) {
         setUsers(data);
       }
+      setIsLodingResults(false);
     }
     searchUser();
   }, [key]);
-
-  useEffect(() => {
-    const handleClickAway = (ev: any) => {
-      if (!(ev.target as HTMLElement).closest(".search-bar-hover-element")) {
-        setIsSearching(false);
-      }
-    };
-    document.addEventListener("click", handleClickAway);
-
-    return () => document.removeEventListener("click", handleClickAway);
-  }, []);
 
   return (
     <aside
@@ -65,8 +56,8 @@ const Sidebar: React.FC<TSidebarProps> = ({
       </div>
       <div className="p-4">
         <SidebarSearchInput
-          isSearching={isSearching}
-          setIsSearching={setIsSearching}
+          closeSheet={onUserClick}
+          isLodingResults={isLodingResults}
           search={search}
           setSearch={setSearch}
           users={users}
