@@ -1,19 +1,28 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
 import { User2 } from "lucide-react";
 
 import ActionTooltip from "@/src/common/components/Tooltip";
+import { TypingAnimation } from "@/src/home/components/coversation/Message";
+
+import useChat from "@/src/home/context/chat/use-chat";
+
+import { TReceiverTyping } from "@/src/home/types";
 
 type TConversationHeaderProps = {
-  online?: boolean;
-  username?: string;
-  avatar?: string;
+  receiverTyping: TReceiverTyping;
 };
 const ConversationHeader: React.FC<TConversationHeaderProps> = ({
-  username,
-  online = false,
-  avatar,
+  receiverTyping,
 }) => {
+  const { activeChat, onlineUsers } = useChat();
+
+  const online = activeChat?._id ? onlineUsers[activeChat?._id] : false;
+  const avatar = activeChat?.avatar;
+  const username = activeChat?.username;
+
   return (
     <div className="flex gap-x-4 items-center">
       {avatar ? (
@@ -22,7 +31,8 @@ const ConversationHeader: React.FC<TConversationHeaderProps> = ({
           alt="user-avatar"
           width={32}
           height={32}
-          className="rounded-full"
+          className="rounded-full w-8 h-8 object-cover"
+          quality={75}
         />
       ) : (
         <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
@@ -34,12 +44,28 @@ const ConversationHeader: React.FC<TConversationHeaderProps> = ({
       </h1>
       {online ? (
         <ActionTooltip description={`${username} is online`}>
-          <div className="end-0 w-3 h-3 rounded-full bg-green-500" />
+          <div className="flex items-center gap-x-2">
+            <div className="end-0 w-3 h-3 rounded-full bg-green-500" />
+            <span className="hidden md:block">online</span>
+          </div>
         </ActionTooltip>
       ) : username ? (
         <ActionTooltip description={`${username} is offline`}>
-          <div className="end-0 w-3 h-3 rounded-full bg-red-500" />
+          <div className="flex items-center gap-x-2">
+            <div className="end-0 w-3 h-3 rounded-full bg-red-500" />
+            <span className="hidden md:block">offline</span>
+          </div>
         </ActionTooltip>
+      ) : null}
+      {/**
+       * 1) chat is active and
+       * 2) reciever is typing and
+       * 3) the opened chat is the one who is typing
+       */}
+      {activeChat &&
+      receiverTyping.typing &&
+      receiverTyping.sender === activeChat?._id ? (
+        <TypingAnimation className="ml-4" />
       ) : null}
     </div>
   );

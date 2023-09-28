@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useEffect } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,9 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 import { useAuth } from "@/src/auth/context/use-auth";
-import { ProfileService } from "../service/profile.service";
-import Image from "next/image";
+
+import { ProfileService } from "@/src/profile/service/profile.service";
 import { UploadFileService } from "@/src/common/service/upload-file.service";
 
 const formSchema = z.object({
@@ -75,21 +77,29 @@ const ProfilePage = () => {
   return (
     <div className="px-4 md:px-0 py-4">
       <h1 className="font-semibold text-4xl mb-6">Update Profile</h1>
-      <div className="border-[1px] w-16 h-16 rounded-full bg-gray-300 my-4 relative overflow-hidden">
-        <label htmlFor="image-upload-avatar" className="cursor-pointer">
-          {user?.avatar ? (
-            <Image
-              fill
-              objectFit="cover"
-              alt="user-avatar"
-              src={user?.avatar}
-            />
-          ) : (
-            <div className="text-4xl text-white text-center w-full h-full flex items-center justify-center">
-              {user?.username[0]}
-            </div>
-          )}
-        </label>
+      <div className="mt-4 mb-8">
+        <div className="border-[1px] w-16 h-16 rounded-full relative overflow-hidden bg-gray-300">
+          <label
+            htmlFor="image-upload-avatar"
+            className="cursor-pointer"
+          >
+            {user?.avatar ? (
+              <Image
+                fill
+                className="object-cover w-auto"
+                alt="user-avatar"
+                src={user?.avatar}
+                quality={75}
+                sizes="64px"
+              />
+            ) : (
+              <div className="text-4xl text-white text-center w-full h-full flex items-center justify-center">
+                {user?.username[0]}
+              </div>
+            )}
+          </label>
+        </div>
+        {file ? <span className="text-xs">{file.name}</span> : null}
       </div>
       <input
         id="image-upload-avatar"

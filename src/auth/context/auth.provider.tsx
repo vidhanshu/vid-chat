@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AuthContext } from "./auth.context";
-import { AuthService } from "../services/auth.service";
-import { TUser } from "./types";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import GenericLoadingPage from "@/src/common/components/GenericLoadingPage";
+import { AuthService } from "@/src/auth/services/auth.service";
 import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
+import { AuthContext } from "@/src/auth/context/auth.context";
+
+import { TUser } from "@/src/auth/types";
 
 const authService = new AuthService();
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {

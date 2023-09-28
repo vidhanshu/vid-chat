@@ -1,103 +1,115 @@
 "use client";
 
-import React from "react";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
 
 import useSocket from "../../context/socket/use-socket";
 import useChat from "../../context/chat/use-chat";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/src/auth/context/use-auth";
+import { useDebounce } from "@/src/common/hooks/use-debounce";
 
 import { ChatService } from "../../service/chat.service";
 
-const formSchema = z.object({
-  message: z.string(),
-});
+import { TMessage, TReceiverTyping } from "@/src/home/types";
 
+type SendMessageInputProps = {
+  receiverTyping: TReceiverTyping;
+  setReceiverTyping: React.Dispatch<React.SetStateAction<TReceiverTyping>>;
+};
 const chatService = new ChatService();
-const SendMessageInput = () => {
+const SendMessageInput: React.FC<SendMessageInputProps> = ({
+  receiverTyping,
+  setReceiverTyping,
+}) => {
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [meTyping, setMeTyping] = useState(false);
+  const debouncedMessage = useDebounce(message, 500);
+
   const { toast } = useToast();
   const { socket } = useSocket();
-  const { activeChat } = useChat();
   const { user } = useAuth();
+  const { activeChat, setMessages } = useChat();
 
-  const audioRef = React.useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      message: "",
-    },
-  });
+  // for me typingcan I use the above function
+  useEffect(() => {
+    socket?.emit("typing", {
+      receiver: activeChat?._id,
+      sender: user?._id,
+      meTyping,
+    });
+  }, [meTyping]);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (values.message.trim() === "") return toast({ title: "Empty message" });
+  // me is typing
+  useEffect(() => {
+    setMeTyping(!!debouncedMessage);
+  }, [debouncedMessage]);
 
-    await chatService.sendMessage(values.message, activeChat?._id);
+  // receiver is typing
+  useEffect(() => {
+    socket?.on(
+      "receiverTyping",
+      ({ typing, sender }: { typing: boolean; sender: string }) => {
+        setReceiverTyping({
+          typing,
+          sender,
+        });
+      }
+    );
+
+    return () => {
+      socket?.off("receiverTyping");
+    };
+  }, [receiverTyping]);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (message.trim() === "") return toast({ title: "Empty message" });
+    setLoading(true);
+
+    const { data } = await chatService.sendMessage(message, activeChat?._id);
+    setMessages((prev: TMessage[]) => [...prev, data]);
 
     socket?.emit("sendMessage", {
-      message: values.message,
+      message: message,
       receiver: activeChat?._id,
       sender: user?._id,
     });
 
-    console.log(audioRef.current)
-
     await audioRef.current?.play();
 
-    form.setValue("message", "");
+    setMessage("");
+    setLoading(false);
   }
 
-  const isSubmitting = form.formState.isSubmitting;
-
   return (
-    <div className="border-t-[1px] p-2">
-      <audio className="hidden" ref={audioRef} controls src="/message_sent.mp3">
-        Your browser does not support the
-        <code>audio</code> element.
-      </audio>
-      <Form {...form}>
+    <>
+      <div className="border-t-[1px] p-2">
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={onSubmit}
           className="flex justify-between items-center gap-x-2"
         >
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem className="flex-grow">
-                <FormControl>
-                  <Input
-                    autoComplete="off"
-                    autoCorrect="off"
-                    className="focus-visible:ring-0 focus-visible:ring-transparent"
-                    placeholder="Enter message"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <Input
+            autoComplete="off"
+            autoCorrect="off"
+            className="focus-visible:ring-0 focus-visible:ring-transparent"
+            placeholder="Enter message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
-          <Button isLoading={isSubmitting} type="submit">
+          <Button isLoading={loading} type="submit">
             <Send className="w-5 h-5 text-white" />
           </Button>
         </form>
-      </Form>
-    </div>
+      </div>
+      <audio className="hidden" ref={audioRef} src="/message_sent.mp3" />
+    </>
   );
 };
 

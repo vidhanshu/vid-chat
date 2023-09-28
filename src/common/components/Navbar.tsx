@@ -1,7 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { User2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -14,13 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import useSocket from "@/src/home/context/socket/use-socket";
+import { useAuth } from "@/src/auth/context/use-auth";
+
 import { AuthService } from "@/src/auth/services/auth.service";
 
-import useSocket from "../../home/context/socket/use-socket";
-import { useAuth } from "@/src/auth/context/use-auth";
-import { FRONTEND_ROUTES } from "../utils/routes";
-import Link from "next/link";
-import Image from "next/image";
+import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
 const authService = new AuthService();
 const Navbar = () => {
@@ -62,7 +63,7 @@ const Navbar = () => {
                     alt="user-avatar"
                     width={32}
                     height={32}
-                    className="rounded-full"
+                    className="rounded-full w-8 h-8 object-cover"
                   />
                 ) : (
                   <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">

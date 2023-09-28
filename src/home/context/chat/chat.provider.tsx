@@ -3,11 +3,14 @@
 import React, { useEffect } from "react";
 
 import { ChatContext } from "./chat.context";
-import { TMessage, TOnlineUsers } from "../../types";
-import { ChatService } from "../../service/chat.service";
-import { TChat } from "../../components/types";
-import { TUser } from "@/src/auth/context/types";
-import useSocket from "../socket/use-socket";
+
+import useSocket from "@/src/home/context/socket/use-socket";
+
+import { ChatService } from "@/src/home/service/chat.service";
+
+import { TChat } from "@/src/home/types";
+import { TUser } from "@/src/auth/types";
+import { TMessage, TOnlineUsers } from "@/src/home/types";
 
 const chatService = new ChatService();
 const ChatProvider = ({ children }: { children: React.ReactNode }) => {
@@ -70,7 +73,7 @@ const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         setMessages,
         messages,
         loading,
-        onlineUsers
+        onlineUsers,
       }}
     >
       {children}

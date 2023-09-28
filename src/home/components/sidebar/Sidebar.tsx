@@ -1,20 +1,20 @@
 "use client";
 
-import { SearchIcon, X } from "lucide-react";
 import React, { HTMLAttributes, useEffect, useState } from "react";
 
-import UserCard from "./UserCard";
-import SidebarSkeleton from "./SidebarSkeleton";
+import UserCard from "@/src/home/components/sidebar/UserCard";
+import SidebarSkeleton from "@/src/home/components/sidebar/SidebarSkeleton";
+import SidebarSearchInput from "@/src/home/components/sidebar/SidebarSearchInput";
 
+import useChat from "@/src/home/context/chat/use-chat";
 import { useAuth } from "@/src/auth/context/use-auth";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
-import useChat from "../../context/chat/use-chat";
 
-import { UserService } from "../../service/user.service";
+import { UserService } from "@/src/home/service/user.service";
 
-import { TUser } from "@/src/auth/context/types";
 import { cn } from "@/lib/utils";
-import IconButton from "@/components/ui/icon-button";
+
+import { TUser } from "@/src/auth/types";
 
 const userService = new UserService();
 type TSidebarProps = HTMLAttributes<HTMLDivElement> & {
@@ -32,7 +32,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
   const [search, setSearch] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [users, setUsers] = useState<TUser[]>([]);
-  const key = useDebounce(search, 500);
+  const key = useDebounce<string>(search, 500);
 
   useEffect(() => {
     async function searchUser() {
@@ -64,50 +64,13 @@ const Sidebar: React.FC<TSidebarProps> = ({
         <h1 className="text-center font-bold">Users</h1>
       </div>
       <div className="p-4">
-        <div className="relative flex gap-x-2 items-center border-[1px] rounded-sm p-2 search-bar-hover-element">
-          <SearchIcon className="w-5 h-5 text-slate-400" />
-          <input
-            onFocus={() => {
-              setIsSearching(true);
-            }}
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
-            value={search}
-            className="focus:outline-none flex-grow"
-            placeholder="Enter username to search..."
-          />
-          <IconButton onClick={() => setSearch("")} className="p-1 hidden md:block">
-            <X className="w-4 h-4 text-slate-400" />
-          </IconButton>
-
-          {isSearching && (
-            <div className="absolute top-full left-0 w-full p-2 bg-white shadow-sm rounded-sm border-[1px]">
-              {!search ? (
-                <span className="text-sm text-slate-400">
-                  Type to search...
-                </span>
-              ) : (
-                <div className="space-y-2">
-                  {users.map((u) => {
-                    return (
-                      <UserCard
-                        avatar={u.avatar}
-                        key={u._id}
-                        username={u.username}
-                        online={onlineUsers[u._id]}
-                        handleClick={() => {
-                          setActiveChat(u);
-                          setIsSearching(false);
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <SidebarSearchInput
+          isSearching={isSearching}
+          setIsSearching={setIsSearching}
+          search={search}
+          setSearch={setSearch}
+          users={users}
+        />
       </div>
       <div className="max-h-[calc(100vh_-_150px)] md:max-h-[calc(100vh_-_150px_-_130px)] overflow-hidden">
         <h5 className="px-4 font-medium mb-2">Recent chats</h5>

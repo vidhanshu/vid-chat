@@ -1,30 +1,34 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-
-import useChat from "../../context/chat/use-chat";
-import useSocket from "../../context/socket/use-socket";
-import { useAuth } from "@/src/auth/context/use-auth";
 
 import IconButton from "@/components/ui/icon-button";
 import ActionTooltip from "@/src/common/components/Tooltip";
+import Conversation from "@/src/home/components/coversation/Conversation";
+import NoActiveChat from "@/src/home/components/coversation/NoActiveChat";
+import ConversationSkeleton from "@/src/home/components/coversation/ConversationSkeleton";
+import SendMessageInput from "@/src/home/components/coversation/SendMessageInput";
+import ConversationHeader from "@/src/home/components/coversation/ConversationHeader";
 
-import Conversation from "./Conversation";
-import NoActiveChat from "./NoActiveChat";
-import ConversationSkeleton from "./ConversationSkeleton";
+import useChat from "@/src/home/context/chat/use-chat";
+import useSocket from "@/src/home/context/socket/use-socket";
+import { useAuth } from "@/src/auth/context/use-auth";
 
-import { ChatService } from "../../service/chat.service";
+import { ChatService } from "@/src/home/service/chat.service";
 
-import { TMessage } from "../../types";
-import SendMessageInput from "./SendMessageInput";
-import ConversationHeader from "./ConversationHeader";
-import { TChat } from "../types";
+import { scrollInView } from "@/src/common/utils/scroll-in-view";
+import { updateActiveChats } from "@/src/home/utils/update-active-chats";
+
+import { TChat, TMessage, TReceiverTyping } from "@/src/home/types";
 
 const chatService = new ChatService();
 const ConversationSection = () => {
-  const { user } = useAuth();
-  const { onlineUsers } = useChat();
+  const [receiverTyping, setReceiverTyping] = useState<TReceiverTyping>({
+    typing: false,
+    sender: "",
+  });
+
   const { socket } = useSocket();
   const {
     activeChat,
@@ -39,13 +43,9 @@ const ConversationSection = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
-  }, [bottomRef.current, messages]);
+    scrollInView(bottomRef);
+  }, [bottomRef.current, messages, receiverTyping]);
 
   useEffect(() => {
     // to fetch chats if new message is recieved
@@ -61,22 +61,7 @@ const ConversationSection = () => {
       // play sound
       await audioRef.current?.play();
       // to update last message in chats
-      setActiveChats((prev: TChat[]) => {
-        const chats = [...prev];
-        const sender = data.sender;
-        const receiver = data.receiver;
-        const chatIndex = chats.findIndex((chat) => {
-          const participants = chat.participants.map((p) => p._id);
-          return (
-            participants.includes(sender) && participants.includes(receiver)
-          );
-        });
-        if (chatIndex !== -1) {
-          chats[chatIndex].last_message = data.message;
-        }
-        return chats;
-      });
-
+      setActiveChats((prev: TChat[]) => updateActiveChats(prev, data));
       // check if the message is coming from new user
       const isNewChatRequest = !activeChats.some((chat) => {
         const participants = chat.participants.map((p) => p._id);
@@ -100,13 +85,9 @@ const ConversationSection = () => {
 
   return (
     <>
-      <div className="col-span-8 border-l-[1px] flex flex-col justify-between">
+      <div className="col-span-8 md:border-l-[1px] flex flex-col justify-between">
         <div className="border-b-[1px] p-2 flex justify-between items-center h-14">
-          <ConversationHeader
-            username={activeChat?.username}
-            online={onlineUsers[activeChat?._id || ""]}
-            avatar={activeChat?.avatar}
-          />
+          <ConversationHeader receiverTyping={receiverTyping} />
           {activeChat ? (
             <ActionTooltip description="Close this chat">
               <IconButton onClick={() => setActiveChat(null)}>
@@ -116,32 +97,22 @@ const ConversationSection = () => {
           ) : null}
         </div>
         {activeChat ? (
-          loading.chats ? (
+          loading.messages ? (
             <ConversationSkeleton />
           ) : (
             <>
-              <Conversation
-                ref={bottomRef}
-                messages={messages}
-                myId={user?._id}
-                recieverUsername={activeChat?.username}
+              <Conversation ref={bottomRef} receiverTyping={receiverTyping} />
+              <SendMessageInput
+                receiverTyping={receiverTyping}
+                setReceiverTyping={setReceiverTyping}
               />
-              <SendMessageInput />
             </>
           )
         ) : (
           <NoActiveChat />
         )}
       </div>
-      <audio
-        className="hidden"
-        ref={audioRef}
-        controls
-        src="/message_received.mp3"
-      >
-        Your browser does not support the
-        <code>audio</code> element.
-      </audio>
+      <audio className="hidden" ref={audioRef} src="/message_received.mp3" />
     </>
   );
 };

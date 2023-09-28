@@ -1,8 +1,9 @@
 import { createContext } from "react";
-import { TAuthContext, TUser } from "./types";
+
+import { TAuthContext } from "@/src/auth/types";
 
 export const AuthContext = createContext<TAuthContext>({
   user: null,
   setUser: () => {},
-  loading: false
+  loading: false,
 });

@@ -1,6 +1,14 @@
 import { Socket } from "socket.io-client";
-import { TUser } from "../auth/context/types";
-import { TChat } from "./components/types";
+
+import { TUser } from "@/src/auth/types";
+
+export type TChat = {
+  _id: string;
+  participants: TUser[];
+  last_message: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type TMessage = {
   _id: string;
@@ -31,4 +39,9 @@ export type TChatContext = {
 export type TSocketContext = {
   socket: null | Socket;
   isConnected: boolean;
+};
+
+export type TReceiverTyping = {
+  typing: boolean;
+  sender: string;
 };
