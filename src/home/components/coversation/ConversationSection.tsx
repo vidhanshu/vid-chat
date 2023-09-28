@@ -56,8 +56,10 @@ const ConversationSection = () => {
       }
     }
     const getAndSetNewMessage = async (data: TMessage) => {
-      // to update messages
-      setMessages((prev: TMessage[]) => [...prev, data]);
+      // to update messages, iff the message is from active chat
+      if (data.sender === activeChat?._id) {
+        setMessages((prev: TMessage[]) => [...prev, data]);
+      }
       // play sound
       await audioRef.current?.play();
       // to update last message in chats
@@ -81,7 +83,7 @@ const ConversationSection = () => {
     return () => {
       socket?.off("newMessage", getAndSetNewMessage);
     };
-  }, [socket, activeChats]);
+  }, [socket, activeChats, activeChat]);
 
   return (
     <>

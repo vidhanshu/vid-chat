@@ -26,7 +26,6 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
   setReceiverTyping,
 }) => {
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [meTyping, setMeTyping] = useState(false);
   const debouncedMessage = useDebounce(message, 500);
 
@@ -71,21 +70,35 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (message.trim() === "") return toast({ title: "Empty message" });
-    setLoading(true);
 
-    const { data } = await chatService.sendMessage(message, activeChat?._id);
-    setMessages((prev: TMessage[]) => [...prev, data]);
-
+    /**
+     * for sending message quickly emitting the event before messaging saving
+     */
     socket?.emit("sendMessage", {
       message: message,
       receiver: activeChat?._id,
       sender: user?._id,
     });
-
+    
     await audioRef.current?.play();
-
+    
+    const dummyMessage = {
+      _id: new Date().toISOString(),
+      message: message,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      sender: user?._id,
+      receiver: activeChat?._id,
+      read: false,
+    };
+    
+    setMessages((prev: TMessage[]) => [...prev, dummyMessage]);
     setMessage("");
-    setLoading(false);
+
+    /**
+     * Store message to db aramse
+     */
+    await chatService.sendMessage(message, activeChat?._id);
   }
 
   return (
@@ -103,7 +116,10 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <Button isLoading={loading} type="submit">
+          <Button
+            // isLoading={loading}
+            type="submit"
+          >
             <Send className="w-5 h-5 text-white" />
           </Button>
         </form>
