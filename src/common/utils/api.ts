@@ -21,7 +21,7 @@ API.interceptors.request.use(authInterceptor);
 export const handleApiError = async (error: any) => {
   let errorMessage = error.response?.data?.error;
 
-  if (error.response?.data?.error && error.response?.config?.method !== "get") {
+  if (errorMessage && error.response?.config?.method !== "get") {
     toast({
       title: "Error",
       description: errorMessage,

@@ -17,7 +17,9 @@ export type TMessage = {
   updatedAt: string;
   sender: string;
   receiver: string;
-  read: boolean;
+  read?: boolean;
+  deleted?: boolean;
+  edited?: boolean;
 };
 
 export type TOnlineUsers = { [key: string]: boolean };

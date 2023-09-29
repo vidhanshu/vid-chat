@@ -2,15 +2,15 @@
 
 import React, { LegacyRef, forwardRef } from "react";
 
-import useChat from "@/src/home/context/chat/use-chat";
-import { useAuth } from "@/src/auth/context/use-auth";
-
-import { TReceiverTyping } from "@/src/home/types";
 import {
   Message,
   TypingMessage,
 } from "@/src/home/components/coversation/Message";
 import NoConversations from "@/src/home/components/coversation/NoConversations";
+
+import useChat from "@/src/home/context/chat/use-chat";
+
+import { TReceiverTyping } from "@/src/home/types";
 
 type TConversationProps = {
   receiverTyping: TReceiverTyping;
@@ -18,27 +18,12 @@ type TConversationProps = {
 const Conversation = forwardRef(
   ({ receiverTyping }: TConversationProps, ref?: LegacyRef<HTMLDivElement>) => {
     const { activeChat, messages } = useChat();
-    const { user } = useAuth();
-
-    const myId = user?._id;
-
+    
     return (
       <div className="h-[calc(100vh_-_266px)] p-4 gap-y-4 flex flex-col overflow-y-auto">
         {!!messages.length ? (
-          messages.map(({ sender, createdAt, message }, _) => {
-            const isMe = sender === myId;
-
-            return (
-              <Message
-                isMe={isMe}
-                key={_}
-                createdAt={createdAt}
-                message={message}
-                receiverUsername={activeChat?.username}
-                myAvatar={user?.avatar}
-                receiverAvatar={activeChat?.avatar}
-              />
-            );
+          messages.map((message, _) => {
+            return <Message key={_} message={message} />;
           })
         ) : (
           <NoConversations />

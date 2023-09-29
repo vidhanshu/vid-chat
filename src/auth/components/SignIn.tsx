@@ -16,9 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AuthService } from "../services/auth.service";
-import { useAuth } from "../context/use-auth";
+
+import useAuth from "@/src/auth/context/use-auth";
 import { useToast } from "@/components/ui/use-toast";
+
+import { AuthService } from "../services/auth.service";
+
 import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
 const formSchema = z.object({

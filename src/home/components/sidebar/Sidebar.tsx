@@ -7,7 +7,7 @@ import SidebarSkeleton from "@/src/home/components/sidebar/SidebarSkeleton";
 import SidebarSearchInput from "@/src/home/components/sidebar/SidebarSearchInput";
 
 import useChat from "@/src/home/context/chat/use-chat";
-import { useAuth } from "@/src/auth/context/use-auth";
+import useAuth from "@/src/auth/context/use-auth";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
 
 import { UserService } from "@/src/home/service/user.service";

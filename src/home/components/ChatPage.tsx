@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from "react";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import Sidebar from "@/src/home/components/sidebar/Sidebar";
+import ConversationSection from "@/src/home/components/coversation/ConversationSection";
 
-import Sidebar from "./sidebar/Sidebar";
-import ConversationSection from "./coversation/ConversationSection";
 
 import useSocket from "@/src/home/context/socket/use-socket";
-import { useAuth } from "@/src/auth/context/use-auth";
-import { Button } from "@/components/ui/button";
+import useAuth from "@/src/auth/context/use-auth";
 
 const ChatPage = () => {
   const { socket } = useSocket();

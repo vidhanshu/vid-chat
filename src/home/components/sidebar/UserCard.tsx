@@ -43,7 +43,7 @@ const UserCard = (props: TUserCardProps) => {
             alt="user-avatar"
             width={32}
             height={32}
-            className="rounded-full"
+            className="rounded-full w-auto"
           />
         ) : (
           <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">

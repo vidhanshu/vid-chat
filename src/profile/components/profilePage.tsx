@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useAuth } from "@/src/auth/context/use-auth";
+import useAuth from "@/src/auth/context/use-auth";
 
 import { ProfileService } from "@/src/profile/service/profile.service";
 import { UploadFileService } from "@/src/common/service/upload-file.service";

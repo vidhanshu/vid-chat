@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import useSocket from "@/src/home/context/socket/use-socket";
-import { useAuth } from "@/src/auth/context/use-auth";
+import useAuth from "@/src/auth/context/use-auth";
 
 import { AuthService } from "@/src/auth/services/auth.service";
 

@@ -3,16 +3,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Send } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import useSocket from "../../context/socket/use-socket";
-import useChat from "../../context/chat/use-chat";
+import useSocket from "@/src/home/context/socket/use-socket";
+import useChat from "@/src/home/context/chat/use-chat";
+import useAuth from "@/src/auth/context/use-auth";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@/src/auth/context/use-auth";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
 
-import { ChatService } from "../../service/chat.service";
+import { ChatService } from "@/src/home/service/chat.service";
 
 import { TMessage, TReceiverTyping } from "@/src/home/types";
 import { Textarea } from "@/components/ui/textarea";
@@ -72,19 +71,16 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
     e?.preventDefault();
     if (message.trim() === "") return toast({ title: "Empty message" });
 
-    /**
-     * for sending message quickly emitting the event before messaging saving
-     */
-    socket?.emit("sendMessage", {
-      message: message,
-      receiver: activeChat?._id,
-      sender: user?._id,
-    });
-
     await audioRef.current?.play();
 
+    /**
+     * for sending message quickly generating the message dummy and storing it in the context
+     */
+    const dummyId = new Date().toISOString();
+    const chatId = new Date().toISOString();
     const dummyMessage = {
-      _id: new Date().toISOString(),
+      _id: dummyId,
+      chat: chatId,
       message: message,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -97,9 +93,27 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
     setMessage("");
 
     /**
-     * Store message to db aramse
+     * Store message to db
      */
-    await chatService.sendMessage(message, activeChat?._id);
+    const { data } = await chatService.sendMessage(message, activeChat?._id);
+
+    /**
+     * emiting event after saving message to db because we need _id for edit/delete message purpose
+     */
+    socket?.emit("sendMessage", {
+      chat: data?.chat,
+      _id: data?._id,
+      message: message,
+      receiver: activeChat?._id,
+      sender: user?._id,
+    });
+
+    /**
+     * replace dummy message with actual message after saving to db
+     */
+    setMessages((prev: TMessage[]) =>
+      prev.map((m) => (m._id === dummyId ? data : m))
+    );
   }
 
   const handleKeys = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
