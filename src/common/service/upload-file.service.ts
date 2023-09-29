@@ -2,13 +2,13 @@ import { API, handleApiError } from "../utils/api";
 import { toast } from "@/components/ui/use-toast";
 
 export class UploadFileService {
-  async uploadImage(image: File) {
+  async uploadFile(file: File) {
     try {
-      if (!image) return { error: "File not found" };
+      if (!file) return { error: "File not found" };
       const formData = new FormData();
-      formData.append("image", image);
+      formData.append("file", file);
 
-      const { data } = await API.post("/image/upload", formData, {
+      const { data } = await API.post("/file/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -26,11 +26,11 @@ export class UploadFileService {
     }
   }
 
-  async deleteImage(link: string) {
+  async deleteFile(link: string) {
     try {
       const key = link.split("/").pop();
       if (!key) return { error: "Key not found" };
-      const { data } = await API.delete("/image/delete", {
+      const { data } = await API.delete("/file/delete", {
         data: { key },
       });
       const { message } = data;

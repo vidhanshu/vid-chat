@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import dayjs from "dayjs";
 import { HTMLAttributes } from "react";
-import { MoreVertical } from "lucide-react";
+import { FileText, MoreVertical } from "lucide-react";
 
 import IconButton from "@/components/ui/icon-button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -20,6 +22,7 @@ import { useModal } from "@/src/common/hooks/use-modal";
 import { cn } from "@/lib/utils";
 
 import { TMessage } from "@/src/home/types";
+import { StringShortener } from "@/src/common/utils/string-manipulation";
 
 type TMessageProps = {
   message: TMessage;
@@ -29,8 +32,10 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
   const { user } = useAuth();
   const { activeChat } = useChat();
 
-  const { createdAt, sender, deleted, edited } = message;
+  const { createdAt, sender, deleted, edited, fileUrl } = message;
   const isMe = sender === user?._id;
+
+  const isImg = fileUrl?.match(/\.(jpeg|jpg|gif|png)$/i);
 
   return (
     <>
@@ -95,6 +100,48 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
           </h5>
         </div>
         <p className="py-2 text-sm md:text-base">
+          {!deleted && fileUrl && isImg ? (
+            <div className="relative min-w-[250px] w-full h-[250px] rounded-lg overflow-hidden">
+              <Image
+                src={fileUrl}
+                alt="message-image"
+                fill
+                className="object-contain"
+              />
+            </div>
+          ) : null}
+          {!deleted && fileUrl && !isImg ? (
+            <div className="relative min-w-[250px] w-full h-[100px]">
+              <Link href={fileUrl} target="_blank" referrerPolicy="no-referrer">
+                <div
+                  className={cn(
+                    "w-full h-[100px] border-[1px] rounded-lg shadow-sm flex flex-col gap-y-4 items-center justify-center transition",
+                    isMe ? "hover:bg-blue-500 border-blue-700 active:bg-blue-700" : "hover:bg-gray-200 active:bg-gray-300"
+                  )}
+                >
+                  <FileText
+                    className={cn(
+                      "w-14 h-14",
+                      isMe ? "text-blue-800" : "text-gray-400"
+                    )}
+                  />
+                  <span className="text-xs">
+                    {StringShortener(fileUrl.split("/").pop() || "", 25)}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          ) : null}
+          {fileUrl ? (
+            <div
+              className={cn(
+                "border-b-[1px] my-2",
+                isMe ? "border-blue-700" : "border-gray-200"
+              )}
+            />
+          ) : (
+            ""
+          )}
           {deleted ? (
             <em className="text-[14px]">This message has been deleted</em>
           ) : (

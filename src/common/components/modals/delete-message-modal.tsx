@@ -38,7 +38,10 @@ const DeleteMessageModal = () => {
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      const { error } = await chatService.deleteMessage(message?._id || "");
+      const { error } = await chatService.deleteMessage(
+        message?._id || "",
+        message?.fileUrl
+      );
       if (error) throw new Error(error);
 
       setMessages((prev: TMessage[]) =>
@@ -52,6 +55,7 @@ const DeleteMessageModal = () => {
       socket?.emit("deleteMessage", {
         messageId: message?._id,
         receiver: activeChat?._id,
+        isFileDeleted: !!message?.fileUrl,
       });
     } catch (error) {
       console.log(error);

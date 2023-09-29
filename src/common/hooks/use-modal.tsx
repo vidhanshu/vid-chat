@@ -1,7 +1,7 @@
 import { TMessage } from "@/src/home/types";
 import { create } from "zustand";
 
-export type ModalType = "DELETE_MESSAGE" | "EDIT_MESSAGE";
+export type ModalType = "DELETE_MESSAGE" | "EDIT_MESSAGE" | "SEND_FILE";
 
 interface ModalData {
   message?: TMessage;

@@ -2,6 +2,7 @@
 
 import DeleteMessageModal from "@/src/common/components/modals/delete-message-modal";
 import EditMessageModal from "@/src/common/components/modals/edit-message-modal";
+import SendFileModal from "../modals/send-file-modal";
 
 import useMounted from "@/src/common/hooks/use-mounted";
 
@@ -12,7 +13,8 @@ const ModelsProvider = () => {
   return (
     <>
       <DeleteMessageModal />
-      <EditMessageModal/>
+      <EditMessageModal />
+      <SendFileModal />
     </>
   );
 };

@@ -60,9 +60,9 @@ const ProfilePage = () => {
     }
     if (file) {
       if (user?.avatar) {
-        await uploadFileService.deleteImage(user?.avatar);
+        await uploadFileService.deleteFile(user?.avatar);
       }
-      const res = await uploadFileService.uploadImage(file);
+      const res = await uploadFileService.uploadFile(file);
       if (res?.link) {
         payload.avatar = res.link;
         setFile(null);
@@ -79,10 +79,7 @@ const ProfilePage = () => {
       <h1 className="font-semibold text-4xl mb-6">Update Profile</h1>
       <div className="mt-4 mb-8">
         <div className="border-[1px] w-16 h-16 rounded-full relative overflow-hidden bg-gray-300">
-          <label
-            htmlFor="image-upload-avatar"
-            className="cursor-pointer"
-          >
+          <label htmlFor="image-upload-avatar" className="cursor-pointer">
             {user?.avatar ? (
               <Image
                 fill

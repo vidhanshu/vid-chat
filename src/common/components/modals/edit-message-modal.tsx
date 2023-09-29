@@ -59,7 +59,7 @@ const EditMessageModal = () => {
 
   useEffect(() => {
     if (message) {
-      form.setValue("message", message.message);
+      form.setValue("message", message.message || "");
     }
   }, [message, form]);
 
@@ -121,7 +121,7 @@ const EditMessageModal = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                        New message
+                        Edited message
                       </FormLabel>
                       <FormControl>
                         <Input

@@ -10,7 +10,7 @@ export const updateActiveChats = (prev: TChat[], data: TMessage) => {
     return participants.includes(sender) && participants.includes(receiver);
   });
   if (chatIndex !== -1) {
-    chats[chatIndex].last_message = data.message;
+    chats[chatIndex].last_message = data.message!;
   }
   return chats;
 };

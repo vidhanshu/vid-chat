@@ -15,7 +15,7 @@ import useChat from "@/src/home/context/chat/use-chat";
 import useMessageSockets from "@/src/home/hooks/use-message-sockets";
 
 const ConversationSection = () => {
-  const { activeChat, setActiveChat, loading } = useChat();
+  const { activeChat, setActiveChat, loading, setMessages } = useChat();
   /**
    * Extracted all the socket logic to a custom hook
    */
@@ -29,7 +29,12 @@ const ConversationSection = () => {
           <ConversationHeader receiverTyping={receiverTyping} />
           {activeChat ? (
             <ActionTooltip description="Close this chat">
-              <IconButton onClick={() => setActiveChat(null)}>
+              <IconButton
+                onClick={() => {
+                  setActiveChat(null);
+                  setMessages([]);
+                }}
+              >
                 <X className="w-5 h-5 text-gray-600" />
               </IconButton>
             </ActionTooltip>

@@ -1,26 +1,29 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { Paperclip, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import IconButton from "@/components/ui/icon-button";
+import { Textarea } from "@/components/ui/textarea";
 
 import useSocket from "@/src/home/context/socket/use-socket";
 import useChat from "@/src/home/context/chat/use-chat";
 import useAuth from "@/src/auth/context/use-auth";
 import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
+import { useModal } from "@/src/common/hooks/use-modal";
 
 import { ChatService } from "@/src/home/service/chat.service";
 
-import { TMessage, TReceiverTyping } from "@/src/home/types";
-import { Textarea } from "@/components/ui/textarea";
+import { sendMessageHandler } from "@/src/home/utils/send-message-handler";
+
+import { TReceiverTyping } from "@/src/home/types";
 
 type SendMessageInputProps = {
   receiverTyping: TReceiverTyping;
   setReceiverTyping: React.Dispatch<React.SetStateAction<TReceiverTyping>>;
 };
-const chatService = new ChatService();
 const SendMessageInput: React.FC<SendMessageInputProps> = ({
   receiverTyping,
   setReceiverTyping,
@@ -33,6 +36,7 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
   const { socket } = useSocket();
   const { user } = useAuth();
   const { activeChat, setMessages } = useChat();
+  const { onOpen } = useModal();
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -69,51 +73,15 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
 
   async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
-    if (message.trim() === "") return toast({ title: "Empty message" });
-
-    await audioRef.current?.play();
-
-    /**
-     * for sending message quickly generating the message dummy and storing it in the context
-     */
-    const dummyId = new Date().toISOString();
-    const chatId = new Date().toISOString();
-    const dummyMessage = {
-      _id: dummyId,
-      chat: chatId,
-      message: message,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      sender: user?._id,
-      receiver: activeChat?._id,
-      read: false,
-    };
-
-    setMessages((prev: TMessage[]) => [...prev, dummyMessage]);
-    setMessage("");
-
-    /**
-     * Store message to db
-     */
-    const { data } = await chatService.sendMessage(message, activeChat?._id);
-
-    /**
-     * emiting event after saving message to db because we need _id for edit/delete message purpose
-     */
-    socket?.emit("sendMessage", {
-      chat: data?.chat,
-      _id: data?._id,
-      message: message,
-      receiver: activeChat?._id,
-      sender: user?._id,
+    sendMessageHandler({
+      audioRef,
+      receiver: activeChat?._id!,
+      sender: user?._id!,
+      setMessage,
+      setMessages,
+      message,
+      socket,
     });
-
-    /**
-     * replace dummy message with actual message after saving to db
-     */
-    setMessages((prev: TMessage[]) =>
-      prev.map((m) => (m._id === dummyId ? data : m))
-    );
   }
 
   const handleKeys = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -141,6 +109,14 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
+          <IconButton
+            onClick={(e) => {
+              e.preventDefault();
+              onOpen("SEND_FILE");
+            }}
+          >
+            <Paperclip className="w-6 h-6 text-gray-600" />
+          </IconButton>
           <Button
             // isLoading={loading}
             type="submit"

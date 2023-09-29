@@ -12,7 +12,8 @@ export type TChat = {
 
 export type TMessage = {
   _id: string;
-  message: string;
+  message?: string;
+  fileUrl?: string;
   createdAt: string;
   updatedAt: string;
   sender: string;

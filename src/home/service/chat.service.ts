@@ -21,14 +21,26 @@ export class ChatService {
     }
   }
 
-  async sendMessage(messageToBeSent: string, receiverId?: string) {
+  async sendMessage(
+    {
+      messageToBeSent,
+      fileUrl,
+    }: {
+      messageToBeSent?: string;
+      fileUrl?: string;
+    },
+    receiverId?: string
+  ) {
     try {
-      if (!receiverId || !messageToBeSent)
-        return { error: "ReceiverId  is missing" };
+      if (!receiverId) return { error: "ReceiverId  is missing" };
+      if (!messageToBeSent && !fileUrl) {
+        return { error: "Message or file is required" };
+      }
       const {
         data: { message, data, error },
       } = await API.post(`/chats/message/${receiverId}`, {
         message: messageToBeSent,
+        fileUrl,
       });
       if (error) {
         return { error, message };
@@ -39,15 +51,27 @@ export class ChatService {
     }
   }
 
-  async deleteMessage(messageId: string) {
+  async deleteMessage(messageId: string, fileUrl?: string) {
     try {
       if (!messageId) return { error: "messageId is required" };
-      const { data } = await API.delete(`/chats/message/${messageId}`);
+      const { data } = await API.delete(`/chats/message/${messageId}`, {
+        data: {
+          deleteFile: !!fileUrl,
+        },
+      });
       const { message } = data;
       if (message) {
         toast({
           title: "Success",
           description: message,
+        });
+      }
+      if (fileUrl) {
+        const key = fileUrl.split("/").pop();
+        await API.delete(`/file/delete`, {
+          data: {
+            key,
+          },
         });
       }
       return { error: null };

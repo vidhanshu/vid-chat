@@ -73,17 +73,32 @@ const useMessageSockets = (): useMessageSocketsReturn => {
   }, [socket, activeChats, activeChat]);
 
   useEffect(() => {
-    socket?.on("deleteMessage", async (messageId: string) => {
-      setMessages((prev: TMessage[]) => {
-        return prev.map((m) =>
-          m._id === messageId
-            ? { ...m, deleted: true, message: "This message was deleted" }
-            : m
-        );
-      });
-      // to update last message in chats
-      await fetchChats();
-    });
+    socket?.on(
+      "deleteMessage",
+      async ({
+        messageId,
+        isFileDeleted,
+      }: {
+        messageId: string;
+        receiver: string;
+        isFileDeleted?: boolean;
+      }) => {
+        setMessages((prev: TMessage[]) => {
+          return prev.map((m) =>
+            m._id === messageId
+              ? {
+                  ...m,
+                  deleted: true,
+                  message: "This message was deleted",
+                  fileUrl: isFileDeleted ? undefined : m.fileUrl,
+                }
+              : m
+          );
+        });
+        // to update last message in chats
+        await fetchChats();
+      }
+    );
 
     return () => {
       socket?.off("deleteMessage");
