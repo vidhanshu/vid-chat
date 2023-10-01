@@ -14,8 +14,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
 import { useModal } from "@/src/common/hooks/use-modal";
 
-import { ChatService } from "@/src/home/service/chat.service";
-
 import { sendMessageHandler } from "@/src/home/utils/send-message-handler";
 
 import { TReceiverTyping } from "@/src/home/types";
