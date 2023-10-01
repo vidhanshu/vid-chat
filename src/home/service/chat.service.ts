@@ -1,7 +1,7 @@
 import { API, handleApiError } from "@/src/common/utils/api";
 import { toast } from "@/components/ui/use-toast";
 
-export class ChatService {
+class ChatService {
   async getChats() {
     try {
       const {
@@ -115,3 +115,5 @@ export class ChatService {
     }
   }
 }
+
+export default new ChatService();

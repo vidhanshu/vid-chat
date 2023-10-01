@@ -19,16 +19,15 @@ import { Button } from "@/components/ui/button";
 
 import useAuth from "@/src/auth/context/use-auth";
 
-import { ProfileService } from "@/src/profile/service/profile.service";
-import { UploadFileService } from "@/src/common/service/upload-file.service";
+import profileService from "@/src/profile/service/profile.service";
+import uploadFileService from "@/src/common/service/upload-file.service";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50).optional(),
   email: z.string().email().optional(),
   password: z.string().optional(),
 });
-const profileService = new ProfileService();
-const uploadFileService = new UploadFileService();
+
 const ProfilePage = () => {
   const { user, setUser } = useAuth();
   const [file, setFile] = React.useState<File | null>(null);

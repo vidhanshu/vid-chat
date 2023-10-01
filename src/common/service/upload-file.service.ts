@@ -1,7 +1,7 @@
 import { API, handleApiError } from "../utils/api";
 import { toast } from "@/components/ui/use-toast";
 
-export class UploadFileService {
+class UploadFileService {
   async uploadFile(file: File) {
     try {
       if (!file) return { error: "File not found" };
@@ -46,3 +46,5 @@ export class UploadFileService {
     }
   }
 }
+
+export default new UploadFileService();

@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { API, handleApiError } from "@/src/common/utils/api";
 
-export class ProfileService {
+class ProfileService {
   async updateProfile({
     username,
     password,
@@ -40,3 +40,5 @@ export class ProfileService {
     }
   }
 }
+
+export default new ProfileService();

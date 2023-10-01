@@ -3,7 +3,7 @@
 import { API, handleApiError } from "@/src/common/utils/api";
 import { toast } from "@/components/ui/use-toast";
 
-export class AuthService {
+class AuthService {
   async Signup(username: string, email: string, password: string) {
     try {
       const { data } = await API.post("/auth/sign-up", {
@@ -75,3 +75,5 @@ export class AuthService {
     }
   }
 }
+
+export default new AuthService();

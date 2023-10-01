@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { ChatService } from "@/src/home/service/chat.service";
+import chatService from "@/src/home/service/chat.service";
 
 import useChat from "@/src/home/context/chat/use-chat";
 import useSocket from "@/src/home/context/socket/use-socket";
@@ -10,7 +10,6 @@ import { updateActiveChats } from "@/src/home/utils/update-active-chats";
 import { TChat, TMessage, TReceiverTyping } from "@/src/home/types";
 import { scrollInView } from "@/src/common/utils/scroll-in-view";
 
-const chatService = new ChatService();
 type useMessageSocketsReturn = {
   receiverTyping: TReceiverTyping;
   setReceiverTyping: React.Dispatch<React.SetStateAction<TReceiverTyping>>;

@@ -23,11 +23,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useModal } from "@/src/common/hooks/use-modal";
-import { ChatService } from "@/src/home/service/chat.service";
+
 import useSocket from "@/src/home/context/socket/use-socket";
-import { useToast } from "@/components/ui/use-toast";
 import useChat from "@/src/home/context/chat/use-chat";
+import { useToast } from "@/components/ui/use-toast";
+import { useModal } from "@/src/common/hooks/use-modal";
+
+import chatService from "@/src/home/service/chat.service";
 
 import { TMessage } from "@/src/home/types";
 
@@ -36,7 +38,6 @@ const formSchema = z.object({
     message: "Please enter a server name",
   }),
 });
-const chatService = new ChatService();
 const EditMessageModal = () => {
   const {
     isOpen,

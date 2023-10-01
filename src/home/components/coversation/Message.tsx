@@ -11,7 +11,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -41,7 +40,7 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
     <>
       <div
         className={cn(
-          "p-4 rounded-md w-fit max-w-[80%]",
+          "p-4 rounded-md w-fit max-w-full",
           !isMe ? "bg-slate-100" : "bg-blue-600 text-white",
           !isMe ? "" : "self-end"
         )}
@@ -101,7 +100,10 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
         </div>
         <p className="py-2 text-sm md:text-base">
           {!deleted && fileUrl && isImg ? (
-            <div className="relative min-w-[250px] w-full h-[250px] rounded-lg overflow-hidden">
+            <div
+              onClick={() => onOpen("VIEW_IMAGE", { message })}
+              className="relative min-w-[250px] w-full h-[250px] rounded-lg overflow-hidden cursor-pointer"
+            >
               <Image
                 src={fileUrl}
                 alt="message-image"
@@ -111,12 +113,14 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
             </div>
           ) : null}
           {!deleted && fileUrl && !isImg ? (
-            <div className="relative min-w-[250px] w-full h-[100px]">
+            <div className="relative md:min-w-[250px] w-full h-[100px]">
               <Link href={fileUrl} target="_blank" referrerPolicy="no-referrer">
                 <div
                   className={cn(
                     "w-full h-[100px] border-[1px] rounded-lg shadow-sm flex flex-col gap-y-4 items-center justify-center transition",
-                    isMe ? "hover:bg-blue-500 border-blue-700 active:bg-blue-700" : "hover:bg-gray-200 active:bg-gray-300"
+                    isMe
+                      ? "hover:bg-blue-500 border-blue-700 active:bg-blue-700"
+                      : "hover:bg-gray-200 active:bg-gray-300"
                   )}
                 >
                   <FileText
@@ -125,7 +129,7 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
                       isMe ? "text-blue-800" : "text-gray-400"
                     )}
                   />
-                  <span className="text-xs">
+                  <span className="px-2 text-xs">
                     {StringShortener(fileUrl.split("/").pop() || "", 25)}
                   </span>
                 </div>

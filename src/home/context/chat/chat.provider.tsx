@@ -6,13 +6,12 @@ import { ChatContext } from "./chat.context";
 
 import useSocket from "@/src/home/context/socket/use-socket";
 
-import { ChatService } from "@/src/home/service/chat.service";
+import chatService from "@/src/home/service/chat.service";
 
 import { TChat } from "@/src/home/types";
 import { TUser } from "@/src/auth/types";
 import { TMessage, TOnlineUsers } from "@/src/home/types";
 
-const chatService = new ChatService();
 const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const { socket } = useSocket();
   // currently going on chat

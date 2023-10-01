@@ -1,6 +1,6 @@
 import { API } from "@/src/common/utils/api";
 
-export class UserService {
+class UserService {
   async searchUser(key: string): Promise<{ data?: any; error?: any }> {
     try {
       if (!key) return { data: [], error: null };
@@ -14,3 +14,5 @@ export class UserService {
     }
   }
 }
+
+export default new UserService();

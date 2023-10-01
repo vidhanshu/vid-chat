@@ -18,9 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 
 import useAuth from "@/src/auth/context/use-auth";
-import { useToast } from "@/components/ui/use-toast";
 
-import { AuthService } from "../services/auth.service";
+import authService from "@/src/auth/services/auth.service";
 
 import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
@@ -29,10 +28,8 @@ const formSchema = z.object({
   password: z.string().min(6).max(30),
 });
 
-const authService = new AuthService();
 const SignIn = () => {
   const { setUser, user } = useAuth();
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

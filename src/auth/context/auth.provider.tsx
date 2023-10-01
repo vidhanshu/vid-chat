@@ -4,13 +4,15 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import GenericLoadingPage from "@/src/common/components/GenericLoadingPage";
-import { AuthService } from "@/src/auth/services/auth.service";
-import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
+
 import { AuthContext } from "@/src/auth/context/auth.context";
+
+import authService from "@/src/auth/services/auth.service";
+
+import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
 import { TUser } from "@/src/auth/types";
 
-const authService = new AuthService();
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [user, setUser] = useState<TUser | null>(null);

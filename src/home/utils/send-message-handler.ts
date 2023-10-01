@@ -2,7 +2,7 @@ import { Socket } from "socket.io-client";
 
 import { toast } from "@/components/ui/use-toast";
 
-import { ChatService } from "@/src/home/service/chat.service";
+import chatService from "@/src/home/service/chat.service";
 
 import { TMessage } from "@/src/home/types";
 
@@ -17,7 +17,6 @@ type TSendMessageParams = {
   socket: Socket | null;
 };
 
-const chatService = new ChatService();
 export async function sendMessageHandler({
   message,
   fileUrl,

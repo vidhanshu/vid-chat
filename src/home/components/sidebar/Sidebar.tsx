@@ -10,13 +10,12 @@ import useChat from "@/src/home/context/chat/use-chat";
 import useAuth from "@/src/auth/context/use-auth";
 import { useDebounce } from "@/src/common/hooks/use-debounce";
 
-import { UserService } from "@/src/home/service/user.service";
+import userService from "@/src/home/service/user.service";
 
 import { cn } from "@/lib/utils";
 
 import { TUser } from "@/src/auth/types";
 
-const userService = new UserService();
 type TSidebarProps = HTMLAttributes<HTMLDivElement> & {
   onUserClick?: () => void;
 };

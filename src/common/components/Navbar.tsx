@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { User2 } from "lucide-react";
+import { User2, Webhook } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,11 +19,10 @@ import {
 import useSocket from "@/src/home/context/socket/use-socket";
 import useAuth from "@/src/auth/context/use-auth";
 
-import { AuthService } from "@/src/auth/services/auth.service";
+import authService from "@/src/auth/services/auth.service";
 
 import { FRONTEND_ROUTES } from "@/src/common/utils/routes";
 
-const authService = new AuthService();
 const Navbar = () => {
   const router = useRouter();
   const { isConnected } = useSocket();
@@ -45,7 +44,13 @@ const Navbar = () => {
     <div className="shadow-sm border-b-[1px]">
       <div className="max-w-screen-xl m-auto flex justify-between items-center p-4">
         <h1 className="text-lg font-bold">
-          <Link href={FRONTEND_ROUTES.chat}>Vchat</Link>
+          <Link
+            href={FRONTEND_ROUTES.chat}
+            className="flex items-center gap-x-2"
+          >
+            <Webhook className="w-6 h-6 text-blue-600" />
+            Vchat
+          </Link>
         </h1>
         <div className="flex gap-x-4 items-center">
           {isConnected ? (

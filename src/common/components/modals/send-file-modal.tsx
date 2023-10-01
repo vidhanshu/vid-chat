@@ -20,7 +20,7 @@ import { useModal } from "@/src/common/hooks/use-modal";
 import useAuth from "@/src/auth/context/use-auth";
 import useSocket from "@/src/home/context/socket/use-socket";
 
-import { UploadFileService } from "@/src/common/service/upload-file.service";
+import uploadFileService from "@/src/common/service/upload-file.service";
 
 import { sendMessageHandler } from "@/src/home/utils/send-message-handler";
 
@@ -38,7 +38,6 @@ type TUploadLodingState = {
   isLoding: boolean;
 };
 
-const uploadFileService = new UploadFileService();
 const SendFileModal = () => {
   const [fileUrl, setFilUrl] = useState<string>("");
   const [file, setFile] = useState<File>();

@@ -16,11 +16,10 @@ import useChat from "@/src/home/context/chat/use-chat";
 import useSocket from "@/src/home/context/socket/use-socket";
 import { useModal } from "@/src/common/hooks/use-modal";
 
-import { ChatService } from "@/src/home/service/chat.service";
+import chatService from "@/src/home/service/chat.service";
 
 import { TMessage } from "@/src/home/types";
 
-const chatService = new ChatService();
 const DeleteMessageModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
