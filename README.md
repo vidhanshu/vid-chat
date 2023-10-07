@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Vid Chat : A private chat app
 
-## Getting Started
+**How to run in local?**
+1) Clone the repo OR download zip
+2) Run `npm i` OR `yarn`
+3) Create .env.local file in the project root, and paste the content as described in [.env.example](https://github.com/vidhanshu/vid-chat/blob/main/.env.example)
+4) Do `npm run dev` OR `yarn dev` to start the project
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Folder structure:
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+📦 
+├─ .env.example
+├─ .eslintrc.json
+├─ .gitignore
+├─ LICENSE
+├─ README.md
+├─ app
+│  ├─ (auth)
+│  │  └─ auth
+│  │     ├─ layout.tsx
+│  │     ├─ sign-in
+│  │     │  └─ page.tsx
+│  │     └─ sign-up
+│  │        └─ page.tsx
+│  ├─ (main)
+│  │  ├─ chat
+│  │  │  └─ page.tsx
+│  │  ├─ layout.tsx
+│  │  └─ profile
+│  │     └─ page.tsx
+│  ├─ error.tsx
+│  ├─ favicon.ico
+│  ├─ global-error.tsx
+│  ├─ globals.css
+│  ├─ layout.tsx
+│  └─ page.tsx
+├─ components.json
+├─ components
+│  └─ ui
+│     ├─ badge.tsx
+│     ├─ button.tsx
+│     ├─ dialog.tsx
+│     ├─ dropdown-menu.tsx
+│     ├─ form.tsx
+│     ├─ icon-button.tsx
+│     ├─ input.tsx
+│     ├─ label.tsx
+│     ├─ sheet.tsx
+│     ├─ skeleton.tsx
+│     ├─ textarea.tsx
+│     ├─ toast.tsx
+│     ├─ toaster.tsx
+│     ├─ tooltip.tsx
+│     └─ use-toast.ts
+├─ lib
+│  └─ utils.ts
+├─ next.config.js
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.js
+├─ public
+│  ├─ message_received.mp3
+│  ├─ message_sent.mp3
+│  ├─ next.svg
+│  └─ vercel.svg
+├─ src
+│  ├─ auth
+│  │  ├─ components
+│  │  │  ├─ SignIn.tsx
+│  │  │  └─ SignUp.tsx
+│  │  ├─ context
+│  │  │  ├─ auth.context.tsx
+│  │  │  ├─ auth.provider.tsx
+│  │  │  └─ use-auth.tsx
+│  │  ├─ services
+│  │  │  └─ auth.service.ts
+│  │  └─ types.d.ts
+│  ├─ common
+│  │  ├─ components
+│  │  │  ├─ FileUploadInput.tsx
+│  │  │  ├─ GenericLoadingPage.tsx
+│  │  │  ├─ Navbar.tsx
+│  │  │  ├─ Tooltip.tsx
+│  │  │  ├─ modals
+│  │  │  │  ├─ delete-message-modal.tsx
+│  │  │  │  ├─ edit-message-modal.tsx
+│  │  │  │  ├─ send-file-modal.tsx
+│  │  │  │  └─ view-image-modal.tsx
+│  │  │  └─ providers
+│  │  │     └─ modals-provider.tsx
+│  │  ├─ hooks
+│  │  │  ├─ use-debounce.tsx
+│  │  │  ├─ use-modal.tsx
+│  │  │  └─ use-mounted.tsx
+│  │  ├─ service
+│  │  │  └─ upload-file.service.ts
+│  │  └─ utils
+│  │     ├─ api.ts
+│  │     ├─ download-file.ts
+│  │     ├─ id-generator.ts
+│  │     ├─ routes.ts
+│  │     ├─ scroll-in-view.ts
+│  │     └─ string-manipulation.ts
+│  ├─ home
+│  │  ├─ components
+│  │  │  ├─ ChatPage.tsx
+│  │  │  ├─ coversation
+│  │  │  │  ├─ Conversation.tsx
+│  │  │  │  ├─ ConversationHeader.tsx
+│  │  │  │  ├─ ConversationSection.tsx
+│  │  │  │  ├─ ConversationSkeleton.tsx
+│  │  │  │  ├─ Message.tsx
+│  │  │  │  ├─ NoActiveChat.tsx
+│  │  │  │  ├─ NoConversations.tsx
+│  │  │  │  └─ SendMessageInput.tsx
+│  │  │  └─ sidebar
+│  │  │     ├─ Sidebar.tsx
+│  │  │     ├─ SidebarSearchInput.tsx
+│  │  │     ├─ SidebarSkeleton.tsx
+│  │  │     └─ UserCard.tsx
+│  │  ├─ context
+│  │  │  ├─ chat
+│  │  │  │  ├─ chat.context.tsx
+│  │  │  │  ├─ chat.provider.tsx
+│  │  │  │  └─ use-chat.tsx
+│  │  │  └─ socket
+│  │  │     ├─ socket.context.tsx
+│  │  │     ├─ socket.provider.tsx
+│  │  │     └─ use-socket.tsx
+│  │  ├─ hooks
+│  │  │  └─ use-message-sockets.tsx
+│  │  ├─ service
+│  │  │  ├─ chat.service.ts
+│  │  │  └─ user.service.ts
+│  │  ├─ types.d.ts
+│  │  └─ utils
+│  │     ├─ send-message-handler.ts
+│  │     └─ update-active-chats.ts
+│  └─ profile
+│     ├─ components
+│     │  └─ profilePage.tsx
+│     └─ service
+│        └─ profile.service.ts
+├─ tailwind.config.js
+├─ tailwind.config.ts
+└─ tsconfig.json
+```
+©generated by [Project Tree Generator](https://woochanleee.github.io/project-tree-generator)
