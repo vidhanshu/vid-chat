@@ -50,12 +50,11 @@ const SidebarSearchInput: React.FC<SidebarSearchInputProps> = ({
         <DialogTrigger onClick={() => setOpen(true)} className="w-full">
           <Button variant="outline" className="w-full">
             <span className="flex items-center gap-x-2">
-              <SearchIcon className="w-5 h-5 text-slate-400" /> Click here to
-              search users
+              <SearchIcon className="w-5 h-5 text-slate-400" /> Search users
             </span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="border-2 borde-red-500">
+        <DialogContent className="h-[calc(100vh_-_40px)]">
           <DialogHeader>
             <DialogTitle className="mb-2">Search users</DialogTitle>
             <DialogDescription>
@@ -67,7 +66,7 @@ const SidebarSearchInput: React.FC<SidebarSearchInputProps> = ({
                     setSearch(e.target.value);
                   }}
                   value={search}
-                  className="focus:outline-none w-full"
+                  className="focus:outline-none w-full bg-transparent"
                   placeholder="Enter username to search..."
                 />
                 <IconButton
@@ -86,7 +85,7 @@ const SidebarSearchInput: React.FC<SidebarSearchInputProps> = ({
                 ) : isLodingResults ? (
                   <LoadingAnimation title="Searching..." emote="🔍" />
                 ) : !!users?.length ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2 max-h-[calc(100vh_-_200px)] overflow-y-auto">
                     {users.map((u) => {
                       return (
                         <UserCard

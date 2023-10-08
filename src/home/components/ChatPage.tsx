@@ -40,7 +40,7 @@ const ChatPage = () => {
           }}
         >
           <SheetTrigger onClick={() => setOpen(true)} className="mb-2">
-            <Button>Users</Button>
+            <Button variant="primary">Users</Button>
           </SheetTrigger>
           <SheetContent className="px-0">
             <Sidebar onUserClick={() => setOpen(false)} />

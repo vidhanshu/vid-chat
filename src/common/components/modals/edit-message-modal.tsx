@@ -103,12 +103,12 @@ const EditMessageModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="bg-white dark:bg-zinc-900 text-black dark:text-white p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Edit message
           </DialogTitle>
-          <DialogDescription className="text-center text-zinc-500">
+          <DialogDescription className="text-center text-zinc-500 dark:text-zinc-400">
             Once you edit a message, there is no going back. Please be certain.
           </DialogDescription>
         </DialogHeader>
@@ -121,13 +121,13 @@ const EditMessageModal = () => {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                      <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-zinc-300">
                         Edited message
                       </FormLabel>
                       <FormControl>
                         <Input
                           disabled={isSubmitting}
-                          className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                          className="bg-zinc-300/50 dark:bg-zinc-600 border-0 focus-visible:ring-0 text-black dark:text-white focus-visible:ring-offset-0"
                           placeholder="Enter message"
                           {...field}
                         />
@@ -138,8 +138,8 @@ const EditMessageModal = () => {
                 />
               </div>
             </div>
-            <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button disabled={isSubmitting}>Save</Button>
+            <DialogFooter className="bg-gray-100 dark:bg-gray-800 px-6 py-4">
+              <Button disabled={isSubmitting} variant="primary">Save</Button>
             </DialogFooter>
           </form>
         </Form>

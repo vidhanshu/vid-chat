@@ -35,7 +35,7 @@ const ConversationSection = () => {
                   setMessages([]);
                 }}
               >
-                <X className="w-5 h-5 text-gray-600" />
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-500" />
               </IconButton>
             </ActionTooltip>
           ) : null}

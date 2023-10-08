@@ -153,7 +153,7 @@ const ProfilePage = () => {
               </FormItem>
             )}
           />
-          <Button isLoading={isSubmitting} type="submit">
+          <Button variant="primary" isLoading={isSubmitting} type="submit">
             Update
           </Button>
         </form>

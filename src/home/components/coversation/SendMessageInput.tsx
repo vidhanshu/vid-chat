@@ -113,10 +113,10 @@ const SendMessageInput: React.FC<SendMessageInputProps> = ({
               onOpen("SEND_FILE");
             }}
           >
-            <Paperclip className="w-6 h-6 text-gray-600" />
+            <Paperclip className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           </IconButton>
           <Button
-            // isLoading={loading}
+            variant="primary"
             type="submit"
           >
             <Send className="w-5 h-5 text-white" />

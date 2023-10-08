@@ -33,7 +33,7 @@ const FileUploadInput = ({
             />
           ) : (
             <div className="w-[150px] h-[150px] border-[1px] shadow-sm flex flex-col gap-y-4 items-center justify-center">
-              <FileText className="w-14 h-14 text-gray-400" />
+              <FileText className="w-14 h-14 text-gray-400 dark:text-gray-300" />
             </div>
           )}
         </div>
@@ -41,7 +41,7 @@ const FileUploadInput = ({
           <label className="cursor-pointer">
             <div className="border-2 rounded-lg border-dashed p-8 flex flex-col gap-y-4">
               <h1 className="text-blue-500">Select file to send</h1>
-              <em className="text-gray-600 text-xs">
+              <em className="text-gray-600 dark:text-gray-300 text-xs">
                 file type accepted - jpeg/png/jpg/gif & pdf <br /> max filesize
                 accepted - 3MB
               </em>

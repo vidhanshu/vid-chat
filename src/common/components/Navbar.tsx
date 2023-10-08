@@ -18,6 +18,7 @@ import {
 
 import useSocket from "@/src/home/context/socket/use-socket";
 import useAuth from "@/src/auth/context/use-auth";
+import { useTheme } from "next-themes";
 
 import authService from "@/src/auth/services/auth.service";
 
@@ -27,6 +28,7 @@ const Navbar = () => {
   const router = useRouter();
   const { isConnected } = useSocket();
   const { setUser, user } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const [loading, setLoading] = useState(false);
 
@@ -54,9 +56,9 @@ const Navbar = () => {
         </h1>
         <div className="flex gap-x-4 items-center">
           {isConnected ? (
-            <Badge className="bg-green-600 hover:bg-green-600">Connected</Badge>
+            <Badge className="bg-green-600 hover:bg-green-600 text-white">Connected</Badge>
           ) : (
-            <Badge className="bg-red-600 hover:bg-red-600">Not conencted</Badge>
+            <Badge className="bg-red-600 hover:bg-red-600 text-white">Not conencted</Badge>
           )}
           <DropdownMenu>
             <DropdownMenuTrigger className="px-2">
@@ -82,6 +84,14 @@ const Navbar = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Link href={FRONTEND_ROUTES.profile}>Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={loading}
+                onClick={() => {
+                  setTheme(theme === "dark" ? "light" : "dark");
+                }}
+              >
+                Change theme
               </DropdownMenuItem>
               <DropdownMenuItem disabled={loading} onClick={handleSignout}>
                 Sign out

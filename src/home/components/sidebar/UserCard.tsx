@@ -31,8 +31,8 @@ const UserCard = (props: TUserCardProps) => {
     <div
       onClick={handleClick}
       className={cn(
-        "cursor-pointer px-4 py-2 bg-slate-100 rounded-sm w-full flex justify-between items-center transition",
-        active ? "bg-black text-white hover:bg-black/80" : "hover:bg-slate-200",
+        "cursor-pointer px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-sm w-full flex justify-between items-center transition",
+        active ? "bg-black dark:bg-blue-700 dark:hover:bg-blue-600 text-white hover:bg-black/80" : "hover:bg-slate-200",
         className
       )}
     >
@@ -46,14 +46,14 @@ const UserCard = (props: TUserCardProps) => {
             className="rounded-full w-auto"
           />
         ) : (
-          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
-            <User2 className="w-5 h-5 text-gray-600" />
+          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-700">
+            <User2 className="w-5 h-5 text-gray-600 dark:text-slate-400" />
           </div>
         )}
         <div>
           <h6 className="text-sm md:text-base font-medium">{username}</h6>
           {last_message ? (
-            <p className={cn("text-xs md:text-sm ", active ? "text-white" : "text-gray-600")}>
+            <p className={cn("text-xs md:text-sm ", active ? "text-white" : "text-gray-600 dark:text-gray-400")}>
               {StringShortener(last_message, 25)}
             </p>
           ) : null}

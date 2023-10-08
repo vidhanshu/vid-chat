@@ -128,7 +128,7 @@ const formSchema = z
               </FormItem>
             )}
           />
-          <Button isLoading={isSubmitting} type="submit">
+          <Button variant="primary" isLoading={isSubmitting} type="submit">
             Sign up
           </Button>
           <p>

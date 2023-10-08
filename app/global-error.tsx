@@ -27,7 +27,7 @@ export default function Error({
         <p className="max-w-[300px] text-gray-400 text-center mt-2">
           Please press the reset button to try again
         </p>
-        <Button className="mt-8" onClick={reset}>
+        <Button variant="primary" className="mt-8" onClick={reset}>
           Reset & Retry
         </Button>
       </div>

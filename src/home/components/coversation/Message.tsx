@@ -41,14 +41,14 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
       <div
         className={cn(
           "p-4 rounded-md w-fit max-w-full",
-          !isMe ? "bg-slate-100" : "bg-blue-600 text-white",
+          !isMe ? "bg-slate-100 dark:bg-gray-800" : "bg-blue-600 text-white",
           !isMe ? "" : "self-end"
         )}
       >
         <div
           className={cn(
-            "border-b-[1px] pb-2 flex gap-x-2 items-center",
-            isMe ? "border-blue-700 justify-start flex-row-reverse" : ""
+            "border-b-[1px] dark:border-gray-600 pb-2 flex gap-x-2 items-center",
+            isMe ? "border-blue-700 dark:border-blue-700 justify-start flex-row-reverse" : ""
           )}
         >
           {isMe && !deleted ? (
@@ -136,7 +136,7 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
               </Link>
             </div>
           ) : null}
-          {fileUrl ? (
+          {fileUrl && !deleted ? (
             <div
               className={cn(
                 "border-b-[1px] my-2",
@@ -154,7 +154,7 @@ export const Message: React.FC<TMessageProps> = ({ message }) => {
         </p>
         <div className="flex justify-end">
           <span
-            className={cn("text-xs", isMe ? "text-white" : "text-gray-500")}
+            className={cn("text-xs", isMe ? "text-white" : "text-gray-500 dark:text-gray-400")}
           >
             {dayjs(createdAt).format("h:mm A")}
             {edited && !deleted ? " . Edited" : null}
@@ -173,8 +173,8 @@ export const TypingMessage: React.FC<TTypingMessageProps> = ({
   receiverAvatar,
   receiverUsername,
 }) => (
-  <div className={cn("p-4 rounded-md w-fit max-w-[80%] bg-slate-100")}>
-    <div className={cn("border-b-[1px] pb-2 flex gap-x-2 items-center")}>
+  <div className={cn("p-4 rounded-md w-fit max-w-[80%] bg-slate-100 dark:bg-gray-800")}>
+    <div className={cn("border-b-[1px] dark:border-gray-600 pb-2 flex gap-x-2 items-center")}>
       {receiverAvatar ? (
         <div className="w-6 h-6 relative rounded-full overflow-hidden">
           <Image

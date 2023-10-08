@@ -32,7 +32,7 @@ const ViewImageModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
+      <DialogContent className="bg-white dark:bg-zinc-900 text-black dark:text-white p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-xl text-center font-bold">
             {StringShortener(fileName || "", 40)}
@@ -48,14 +48,17 @@ const ViewImageModal = () => {
                     className="object-contain"
                   />
                 </div>
-                <Button
-                  onClick={() => downloadFile(message?.fileUrl!, fileName)}
-                  className="mt-2"
-                >
-                  <span className="flex items-center gap-x-2">
-                    Download <Download className="w-4 h-4 text-white" />
-                  </span>
-                </Button>
+                <div className="flex justify-center items-center">
+                  <Button
+                    variant="primary"
+                    onClick={() => downloadFile(message?.fileUrl!, fileName)}
+                    className="mt-4"
+                  >
+                    <span className="flex items-center gap-x-2">
+                      Download <Download className="w-4 h-4 text-white" />
+                    </span>
+                  </Button>
+                </div>
               </>
             ) : (
               "File has been deleted"
